@@ -3,7 +3,6 @@ import { generateAccessToken } from "../helper/utils/generateToken.js";
 import bcrypt, { genSalt } from "bcryptjs";
 
 //Most of these actions are to be done by the admin
-
 //get users
 export const getAllUsers = async (req, res, next) => {
   try {
@@ -42,7 +41,6 @@ export const getAllUsers = async (req, res, next) => {
     next(error);
   }
 };
-
 //delete users
 export const deleteUsers = async (req, res, next) => {
   try {
@@ -81,7 +79,6 @@ export const deleteUsers = async (req, res, next) => {
     next(error);
   }
 };
-
 //get user by id
 export const getUserById = async (req, res, next) => {
   try {
@@ -118,7 +115,6 @@ export const getUserById = async (req, res, next) => {
     next(error);
   }
 };
-
 //admin add users
 export const addUser = async (req, res, next) => {
   try {

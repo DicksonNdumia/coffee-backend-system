@@ -45,6 +45,20 @@ CREATE TABLE farmers_data (
 );
 
 
+CREATE TABLE delivery_sessions (
+    id SERIAL PRIMARY KEY,
+
+    season_id INTEGER REFERENCES seasons(id) ON DELETE CASCADE,
+
+    delivery_date DATE NOT NULL,
+
+    notes TEXT, -- optional: "coffee is increasing, add extra day"
+
+    is_open BOOLEAN DEFAULT TRUE,
+
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
 
 -- =========================
 -- ANNOUNCEMENTS
@@ -164,3 +178,29 @@ VALUES
     ('admin', 'Full access to all resources'),
     ('director', 'Sets the price per kilo'),
     ('farmer', 'Provides coffee deliveries');
+
+
+
+--- Adding rules to the data ALTER TABLE farmers_profile 
+ADD CONSTRAINT unique_user UNIQUE (user_id);
+
+ALTER TABLE farmers_profile 
+ADD CONSTRAINT unique_farmer_no UNIQUE (farmer_no);
+
+
+
+
+
+--- Adding a column year
+ALTER TABLE seasons ADD COLUMN year INTEGER;
+
+
+ALTER TABLE seasons ADD CONSTRAINT unique_season_year UNIQUE (year);
+
+
+ALTER TABLE seasons ADD COLUMN status VARCHAR(20) DEFAULT 'OPEN';
+
+ALTER TABLE farmers_data
+ADD COLUMN delivery_session_id INTEGER REFERENCES delivery_sessions(id);
+
+ALTER TABLE delivery_sessions ADD COLUMN status VARCHAR(20) DEFAULT 'OPEN';
