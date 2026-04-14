@@ -28,13 +28,62 @@ CREATE TABLE users (
 );
 
 -- =========================
--- FARMERS DATA (Deliveries)
+-- FARMER PROFILE
+-- =========================
+CREATE TABLE farmers_profile (
+    id SERIAL PRIMARY KEY,
+    farmer_no VARCHAR(50) UNIQUE NOT NULL,
+    user_id INTEGER UNIQUE REFERENCES users(id) ON DELETE SET NULL,
+
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- =========================
+-- SEASONS
+-- =========================
+CREATE TABLE seasons (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+
+    year INTEGER UNIQUE NOT NULL,
+
+    start_date DATE,
+    end_date DATE,
+
+    price_per_kg INTEGER,
+    factory_deduction INTEGER DEFAULT 0,
+
+    status VARCHAR(20) DEFAULT 'OPEN', -- OPEN, CLOSED, PAID
+
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- =========================
+-- DELIVERY SESSIONS (manual dates)
+-- =========================
+CREATE TABLE delivery_sessions (
+    id SERIAL PRIMARY KEY,
+    season_id INTEGER REFERENCES seasons(id) ON DELETE CASCADE,
+
+    delivery_date DATE NOT NULL,
+    notes TEXT,
+
+    status VARCHAR(20) DEFAULT 'OPEN',
+
+    created_at TIMESTAMP DEFAULT NOW(),
+
+    UNIQUE (season_id, delivery_date) -- prevent duplicate same-day entries
+);
+
+-- =========================
+-- FARMERS DATA (DELIVERIES)
 -- =========================
 CREATE TABLE farmers_data (
     id SERIAL PRIMARY KEY,
-    
+
     farmer_id INTEGER REFERENCES farmers_profile(id) ON DELETE SET NULL,
     season_id INTEGER REFERENCES seasons(id) ON DELETE CASCADE,
+    delivery_session_id INTEGER REFERENCES delivery_sessions(id),
 
     quantity INTEGER NOT NULL CHECK (quantity > 0),
     grade VARCHAR(50),
@@ -43,8 +92,6 @@ CREATE TABLE farmers_data (
 
     created_at TIMESTAMP DEFAULT NOW()
 );
-
-
 
 -- =========================
 -- ANNOUNCEMENTS
@@ -106,9 +153,8 @@ CREATE TABLE minutes (
 );
 
 -- =========================
--- factory_data
+-- FACTORY DATA
 -- =========================
-
 CREATE TABLE factory_data (
     id SERIAL PRIMARY KEY,
 
@@ -124,43 +170,21 @@ CREATE TABLE factory_data (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
-
-CREATE TABLE seasons (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100), -- e.g "2025 Season"
-    
-    start_date DATE,
-    end_date DATE,
-
-    price_per_kg INTEGER, -- e.g 155
-    factory_deduction INTEGER DEFAULT 0, -- e.g 5
-
-    is_closed BOOLEAN DEFAULT FALSE, -- once finalized
-
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
 -- =========================
--- INDEXES (Performance)
+-- INDEXES
 -- =========================
 CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_farmers_created_for ON farmers_data(created_for);
-CREATE INDEX idx_rates_created_by ON rates(created_by);
+CREATE INDEX idx_farmers_user_id ON farmers_profile(user_id);
+CREATE INDEX idx_farmers_data_farmer_id ON farmers_data(farmer_id);
+CREATE INDEX idx_farmers_data_season_id ON farmers_data(season_id);
+CREATE INDEX idx_delivery_sessions_season_id ON delivery_sessions(season_id);
 CREATE INDEX idx_meetings_created_by ON meetings(created_by);
 
-
-CREATE TABLE farmers_profile (
-    id SERIAL PRIMARY KEY,
-
-    farmer_no VARCHAR(50) UNIQUE NOT NULL, -- like 1333
-    user_id INTEGER REFERENCES users(id) ON DELETE SET NULL
-);
-
 -- =========================
--- ROLES SEED DATA
+-- SEED DATA
 -- =========================
 INSERT INTO roles (name, description)
 VALUES 
     ('admin', 'Full access to all resources'),
-    ('director', 'Sets the price per kilo'),
+    ('director', 'Manages seasons, pricing, and sessions'),
     ('farmer', 'Provides coffee deliveries');

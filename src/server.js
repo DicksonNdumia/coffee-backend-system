@@ -6,6 +6,8 @@ import chalk from "chalk";
 import { myLogger } from "./middlewares/log/isLogged.js";
 import AuthRoutes from "./routes/authRoutes.js";
 import UserRoutes from "./routes/userRoutes.js";
+import FarmersProfile from "./routes/farmersProfile.routes.js";
+import SeasonsRoutes from "./routes/seasons.routes.js";
 
 dotenv.config();
 
@@ -17,6 +19,8 @@ app.use(myLogger);
 
 app.use("/api/v1/auth", AuthRoutes);
 app.use("/api/v1/users", UserRoutes);
+app.use("/api/v1/farmers", FarmersProfile);
+app.use("/api/v1/season", SeasonsRoutes);
 
 const PORT = process.env.PORT || 3000;
 
