@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.post("/", protect, isDirector, createSeason);
 router.get("/", protect, getAllSeasons);
-router.get("/year", protect, getSeasonByYear);
+router.get("/year/:year", protect, getSeasonByYear);
 router.patch("/:year", protect, isDirector, updateSeasonPricing);
 router.patch("/close/:year", protect, isDirector, closeSeason);
 

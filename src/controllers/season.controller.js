@@ -1,19 +1,6 @@
 import pool from "../config/db.config.js";
 
-// CREATE TABLE seasons (
-//     id SERIAL PRIMARY KEY,
-//     name VARCHAR(100), -- e.g "2025 Season"
 
-//     start_date DATE,
-//     end_date DATE,
-
-//     price_per_kg INTEGER, -- e.g 155
-//     factory_deduction INTEGER DEFAULT 0, -- e.g 5
-
-//     is_closed BOOLEAN DEFAULT FALSE, -- once finalized
-
-//     created_at TIMESTAMP DEFAULT NOW()
-// );
 
 export const createSeason = async (req, res, next) => {
   try {
@@ -137,3 +124,4 @@ export const closeSeason = async (req, res, next) => {
     next(error);
   }
 };
+
