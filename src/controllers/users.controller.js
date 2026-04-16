@@ -1,6 +1,6 @@
 import pool from "../config/db.config.js";
 import { generateAccessToken } from "../helper/utils/generateToken.js";
-import bcrypt, { genSalt } from "bcryptjs";
+import bcrypt from "bcryptjs";
 
 //Most of these actions are to be done by the admin
 //get users
@@ -97,7 +97,7 @@ export const getUserById = async (req, res, next) => {
       return res.status(403).json({ message: "Unauthorized" });
     }
 
-    //Bring back the user using the Id
+    //Bring back the user using the id
     const getUser = await pool.query(`SELECT * FROM users WHERE id=$1  `, [id]);
     const result = getUser.rows[0];
 
@@ -118,10 +118,8 @@ export const getUserById = async (req, res, next) => {
 //admin add users
 export const addUser = async (req, res, next) => {
   try {
-    const { adminId } = req.user.role_id;
 
-    // Only allow admin (assuming 1 = admin)
-    if (adminId !== 1) {
+    if (req.user.role_id !== 1) {
       return res.status(403).json({ message: "Unauthorized" });
     }
 
@@ -151,6 +149,8 @@ export const addUser = async (req, res, next) => {
         message: "Please input everything",
       });
     }
+
+
     //Checking if user already exists
 
     const checkIfUserExist = await pool.query(
@@ -163,7 +163,7 @@ export const addUser = async (req, res, next) => {
       });
     }
 
-    //Phone number vvalidator
+    //Phone number validator
     const checkIfNoExists = await pool.query(
       `
         SELECT * FROM users WHERE phone_number=$1
@@ -176,7 +176,7 @@ export const addUser = async (req, res, next) => {
       });
     }
 
-    //Hashing the password to secureit
+    //Hashing the password to secure it
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
 
@@ -205,10 +205,11 @@ export const addUser = async (req, res, next) => {
       });
     }
 
-    //If it successed do this === give a user their token
+    //If it passes do this === give a user their token
 
     const results = insertUser.rows[0];
     generateAccessToken(res, results.id, results.role_id);
+
 
     //success at last
     return res.status(201).json({

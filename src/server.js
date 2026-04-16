@@ -9,7 +9,8 @@ import UserRoutes from "./routes/userRoutes.js";
 import FarmersProfile from "./routes/farmersProfile.routes.js";
 import SeasonsRoutes from "./routes/seasons.routes.js";
 import  DeliveryRoutes from "./routes/delivery.routes.js";
-import FarmersData from "./routes/farmersData.routes.js"
+import FarmersData from "./routes/farmersData.routes.js";
+import FactoryData from './routes/factoryData.routes.js'
 
 dotenv.config();
 
@@ -25,6 +26,8 @@ app.use("/api/v1/farmers", FarmersProfile);
 app.use("/api/v1/season", SeasonsRoutes);
 app.use("/api/v1/deliveries", DeliveryRoutes);
 app.use('/api/v1/delivered',FarmersData);
+app.use('/api/v1/landing',FactoryData);
+
 
 const PORT = process.env.PORT || 3000;
 

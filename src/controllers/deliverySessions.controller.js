@@ -66,17 +66,22 @@ export const createDeliverySession = async (req, res, next) => {
     }
 };
 export const  getDeliverySession = async(req,res,next) => {
-    const getDelivery_sessions = await pool.query(
-        `SELECT * FROM delivery_sessions`,
-    );
+    try {
+        const getDelivery_sessions = await pool.query(
+            `SELECT * FROM delivery_sessions`,
+        );
 
-    const  results = getDelivery_sessions.rows;
+        const  results = getDelivery_sessions.rows;
 
-    return res.status(200).json({
-        message: "Successfully get delivery session",
-        data : results
+        return res.status(200).json({
+            message: "Successfully get delivery session",
+            data : results
 
-    });
+        });
+    } catch (error) {
+        next(error);
+
+    }
 }
 export const closeDeliverySession = async (req, res, next) => {
     try {
@@ -95,6 +100,7 @@ export const closeDeliverySession = async (req, res, next) => {
         }
 
         const session = sessionCheck.rows[0];
+
 
         if (!session.is_open) {
             return res.status(400).json({
