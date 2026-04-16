@@ -1,4 +1,4 @@
-import bcrypt, { genSalt } from "bcryptjs";
+import bcrypt from "bcryptjs";
 import pool from "../config/db.config.js";
 import {
   generateAccessToken,
@@ -8,7 +8,7 @@ import {
 //Registrations
 export const registerUser = async (req, res, next) => {
   try {
-    //Detructuring the body request
+    //coming from the body request
     const {
       name,
       email,
@@ -56,7 +56,7 @@ export const registerUser = async (req, res, next) => {
       });
     }
 
-    //Phone number vvalidator
+    //Phone number validator
     const checkIfNoExists = await pool.query(
       `
         SELECT * FROM users WHERE phone_number=$1
@@ -69,7 +69,7 @@ export const registerUser = async (req, res, next) => {
       });
     }
 
-    //Hashing the password to secureit
+    //Hashing the password to secure it
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
 
@@ -98,7 +98,7 @@ export const registerUser = async (req, res, next) => {
       });
     }
 
-    //If it successed do this === give a user their token
+    //If it passes do this === give a user their token
 
     const results = insertUser.rows[0];
     generateAccessToken(res, results.id, results.role_id);
@@ -167,12 +167,12 @@ export const loginUser = async (req, res, next) => {
 export const logoutUser = async (req, res, next) => {
   try {
     //We need immeadiately invalidate the access token and  the refresh token
-    /**make it ampty by using the "" Quotes*/
+    /**make it empty by using the "" Quotes*/
     res.cookie("access_token", "", {
       httpOnly: true,
       secure: process.env.NODE_ENV !== "development",
       sameSite: "strict",
-      expires: new Date(0), //Expires immeaditely
+      expires: new Date(0), //Expires immediately
     });
 
     res.cookie("refresh_token", "", {

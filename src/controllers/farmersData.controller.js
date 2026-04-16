@@ -70,7 +70,7 @@ export const recordFarmersData = async (req, res, next) => {
             });
         }
 
-        // derive season_id from session (never trust client)
+
         const season_id = session.season_id;
 
         // prevent duplicate delivery same session
@@ -229,6 +229,105 @@ export const getFarmerPayout = async (req, res, next) => {
             factory_deduction,
             net_price_per_kg: net_price,
             total_payout,
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+export const updateFarmerData = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { farmer_no } = req.query;
+        const { delivery_session_id, quantity, grade } = req.body;
+
+        // 🔒 Only admin allowed
+        if (!req.user || req.user.role_id !== 1) {
+            return res.status(403).json({
+                message: "Only admin can update farmer data",
+            });
+        }
+
+        if (!id) {
+            return res.status(400).json({
+                message: "Delivery record id is required",
+            });
+        }
+
+        if (!farmer_no) {
+            return res.status(400).json({
+                message: "farmer_no is required",
+            });
+        }
+
+        // validate quantity (only if provided)
+        if (quantity !== undefined && (isNaN(quantity) || quantity <= 0)) {
+            return res.status(400).json({
+                message: "Quantity must be a number greater than 0",
+            });
+        }
+
+        // get farmer_id
+        const farmerResult = await pool.query(
+            `SELECT id FROM farmers_profile WHERE farmer_no = $1`,
+            [farmer_no]
+        );
+
+        if (farmerResult.rows.length === 0) {
+            return res.status(404).json({
+                message: "Farmer not found",
+            });
+        }
+
+        const farmer_id = farmerResult.rows[0].id;
+
+        // ensure record exists
+        const checkIfExist = await pool.query(
+            `SELECT * FROM farmers_data WHERE id = $1 AND farmer_id = $2`,
+            [id, farmer_id]
+        );
+
+        if (checkIfExist.rows.length === 0) {
+            return res.status(404).json({
+                message: "Delivery not found",
+            });
+        }
+
+        // validate session if updating
+        if (delivery_session_id) {
+            const sessionResult = await pool.query(
+                `SELECT id, status FROM delivery_sessions WHERE id = $1`,
+                [delivery_session_id]
+            );
+
+            if (sessionResult.rows.length === 0) {
+                return res.status(404).json({
+                    message: "Session not found",
+                });
+            }
+
+            if (sessionResult.rows[0].status !== "OPEN") {
+                return res.status(400).json({
+                    message: "Session is not open for delivery",
+                });
+            }
+        }
+
+        // update
+        const updateDeliveryData = await pool.query(
+            `UPDATE farmers_data
+             SET
+                 delivery_session_id = COALESCE($1, delivery_session_id),
+                 quantity = COALESCE($2, quantity),
+                 grade = COALESCE($3, grade)
+             WHERE id = $4
+                 RETURNING *`,
+            [delivery_session_id, quantity, grade, id]
+        );
+
+        return res.status(200).json({
+            message: "Farmer Data Updated",
+            data: updateDeliveryData.rows[0],
         });
 
     } catch (error) {
