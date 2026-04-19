@@ -86,7 +86,7 @@ export const recordFarmersData = async (req, res, next) => {
             });
         }
 
-        // ✅ insert
+        // insert
         const insert = await pool.query(
             `INSERT INTO farmers_data 
        (farmer_id, season_id, delivery_session_id, quantity, grade) 
@@ -241,7 +241,7 @@ export const updateFarmerData = async (req, res, next) => {
         const { farmer_no } = req.query;
         const { delivery_session_id, quantity, grade } = req.body;
 
-        // 🔒 Only admin allowed
+        //Only admin allowed
         if (!req.user || req.user.role_id !== 1) {
             return res.status(403).json({
                 message: "Only admin can update farmer data",

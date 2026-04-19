@@ -118,7 +118,6 @@ export const getUserById = async (req, res, next) => {
 //admin add users
 export const addUser = async (req, res, next) => {
   try {
-
     if (req.user.role_id !== 1) {
       return res.status(403).json({ message: "Unauthorized" });
     }
@@ -149,7 +148,6 @@ export const addUser = async (req, res, next) => {
         message: "Please input everything",
       });
     }
-
 
     //Checking if user already exists
 
@@ -209,7 +207,6 @@ export const addUser = async (req, res, next) => {
 
     const results = insertUser.rows[0];
     generateAccessToken(res, results.id, results.role_id);
-
 
     //success at last
     return res.status(201).json({
