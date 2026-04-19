@@ -36,7 +36,7 @@ export const isDirector = (req, res, next) => {
   } else {
     return res.status(403).json({
       success: false,
-      message: "Access Denied: You do not have moderator privileges.",
+      message: "Access Denied: You do not have Director privileges.",
     });
   }
 };

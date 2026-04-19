@@ -202,8 +202,7 @@ export const loginUser = async (req, res, next) => {
 //Logout user
 export const logoutUser = async (req, res, next) => {
   try {
-    //We need immeadiately invalidate the access token and  the refresh token
-    /**make it empty by using the "" Quotes*/
+
     res.cookie("access_token", "", {
       httpOnly: true,
       secure: process.env.NODE_ENV !== "development",

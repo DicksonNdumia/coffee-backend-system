@@ -1,7 +1,5 @@
 import pool from "../config/db.config.js";
 
-
-
 export const createSeason = async (req, res, next) => {
   try {
     const { name, start_date, end_date, year } = req.body;
@@ -124,4 +122,3 @@ export const closeSeason = async (req, res, next) => {
     next(error);
   }
 };
-
