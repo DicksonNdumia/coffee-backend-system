@@ -17,6 +17,7 @@ import FactoryData from "./routes/factoryData.routes.js";
 import AnnouncementRoutes from "./routes/announcement.routes.js";
 import MeetingsRoutes from "./routes/meeting.routes.js";
 import MinutesRoutes from "./routes/minutes.routes.js";
+import AnalysisRoutes from "./routes/analysis.routes.js";
 
 //dotenv initialization
 dotenv.config();
@@ -40,6 +41,7 @@ app.use("/api/v1/landing", FactoryData);
 app.use("/api/v1/announcements", AnnouncementRoutes);
 app.use("/api/v1/meetings", MeetingsRoutes);
 app.use("/api/v1/minutes", MinutesRoutes);
+app.use('/api/v1/analysis/admin', AnalysisRoutes);
 
 //Port Declaring
 const PORT = process.env.PORT || 3000;
