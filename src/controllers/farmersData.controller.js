@@ -334,3 +334,59 @@ export const updateFarmerData = async (req, res, next) => {
         next(error);
     }
 };
+export const getAllFarmersPayout = async (req, res, next) => {
+    try {
+        const { season_id } = req.params;
+
+        if (!season_id) {
+            return res.status(400).json({
+                message: "season_id is required",
+            });
+        }
+
+        const result = await pool.query(`
+      SELECT 
+        fp.farmer_no,
+        fp.id AS farmer_id,
+
+        COALESCE(SUM(fd.quantity), 0) AS total_kg,
+
+        s.price_per_kg,
+        s.factory_deduction,
+
+        (s.price_per_kg - s.factory_deduction) AS net_price_per_kg,
+
+        COALESCE(SUM(fd.quantity), 0) * 
+        (s.price_per_kg - s.factory_deduction) AS total_payout
+
+      FROM farmers_profile fp
+
+      LEFT JOIN farmers_data fd 
+        ON fp.id = fd.farmer_id AND fd.season_id = $1
+
+      JOIN seasons s 
+        ON s.id = $1
+
+      GROUP BY 
+        fp.id, fp.farmer_no, 
+        s.price_per_kg, s.factory_deduction
+
+      ORDER BY total_payout DESC
+    `, [season_id]);
+
+        res.status(200).json({
+            season_id,
+            farmers: result.rows.map(row => ({
+                farmer_no: row.farmer_no,
+                total_kg: parseFloat(row.total_kg),
+                price_per_kg: parseFloat(row.price_per_kg),
+                factory_deduction: parseFloat(row.factory_deduction),
+                net_price_per_kg: parseFloat(row.net_price_per_kg),
+                total_payout: parseFloat(row.total_payout),
+            }))
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
