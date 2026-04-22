@@ -1,5 +1,5 @@
 # Use a small base image
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 WORKDIR /app
 
 # Install deps separately for caching

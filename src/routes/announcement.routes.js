@@ -11,7 +11,7 @@ import upload from "../helper/uploads/upload.js";
 const router = express.Router();
 
 router.post('/', protect, isAdmin,upload.single("image"), createAnnouncement);
-router.get('/', protect,getAnnouncements);
+router.get('/', getAnnouncements);
 router.get('/:id', protect, getAnnouncementById);
 router.delete('/:id', protect, isAdmin, deleteAnnouncement);
 router.put('/:id', protect, isAdmin,upload.single("image"), updateAnnouncement);
