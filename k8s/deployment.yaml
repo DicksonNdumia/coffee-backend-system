@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: kubernetes-demo-api
-          image: kubernetes-api:latest
+          image: dicksonndumia19/kubernetes-api:latest
           ports:
             - containerPort: 3000
           env:
@@ -35,13 +35,13 @@ spec:
               memory: "512Mi"
           readinessProbe:
             httpGet:
-              path: /readyz
+              path: /ready
               port: 3000
             initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
             httpGet:
-              path: /healthz
+              path: /healthy
               port: 3000
             initialDelaySeconds: 10
             periodSeconds: 20

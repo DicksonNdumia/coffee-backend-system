@@ -166,7 +166,7 @@ export const loginUser = async (req, res, next) => {
 
     const user = userQuery.rows[0];
 
-    // Prevent timing attacks
+    //
     const fakeHash =
         "$2b$10$CwTycUXWue0Thq9StjUM0uJ8rQ8Yp4nH3UX0YPD6/rs24kTx5c5yG";
 
