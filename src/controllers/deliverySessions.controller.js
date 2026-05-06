@@ -20,7 +20,7 @@ export const createDeliverySession = async (req, res, next) => {
 
     const parsedSeasonId = parseInt(season_id);
 
-    // ✅ check season exists
+    // check season exists
     const checkSeason = await pool.query(
       `SELECT id FROM seasons WHERE id = $1 AND is_closed = FALSE`,
       [parsedSeasonId],
@@ -32,7 +32,6 @@ export const createDeliverySession = async (req, res, next) => {
       });
     }
 
-    // ❌ FIX: ensure uniqueness per season (not global date)
     const existingSession = await pool.query(
       `SELECT id FROM delivery_sessions
              WHERE season_id = $1 AND delivery_date = $2`,
@@ -45,7 +44,6 @@ export const createDeliverySession = async (req, res, next) => {
       });
     }
 
-    // ✅ insert
     const createDelivery = await pool.query(
       `INSERT INTO delivery_sessions (season_id, delivery_date, notes)
              VALUES ($1, $2, $3)

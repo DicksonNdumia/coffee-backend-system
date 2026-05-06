@@ -9,6 +9,6 @@ spec:
     app: devops-kubernetes-api
   ports:
     - protocol: TCP
-      port: 3000 # Service port
-      targetPort: 3000 # Container port
-  type: NodePort # change to LoadBalancer if running in cloud
+      port: 3000
+      targetPort: 3000
+  type: NodePort
