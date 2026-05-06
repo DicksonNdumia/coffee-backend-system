@@ -41,7 +41,7 @@ app.use("/api/v1/landing", FactoryData);
 app.use("/api/v1/announcements", AnnouncementRoutes);
 app.use("/api/v1/meetings", MeetingsRoutes);
 app.use("/api/v1/minutes", MinutesRoutes);
-app.use('/api/v1/analysis/admin', AnalysisRoutes);
+app.use("/api/v1/analysis/admin", AnalysisRoutes);
 
 //Port Declaring
 const PORT = process.env.PORT || 3000;
@@ -59,13 +59,13 @@ app.get("/", (req, res) => {
 app.get("/ready", (req, res) => res.status(200).send("ready"));
 app.get("/healthy", (req, res) => res.status(200).send("ok"));
 
-//Database testing connection
-pool
-  .connect()
-  .then(() => console.log(chalk.yellow("Db Connected")))
-  .catch((err) => console.error(chalk.red("connection error", err)));
+// //Database testing connection
+// pool
+//   .connect()
+//   .then(() => console.log(chalk.yellow("Db Connected")))
+//   .catch((err) => console.error(chalk.red("connection error", err)));
 
 //Port Listening
 app.listen(PORT, () => {
-  console.log(`Port is running on port ${PORT}`);
+  console.log(chalk.green(`Port is running on port ${PORT}`));
 });
