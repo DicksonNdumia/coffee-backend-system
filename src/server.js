@@ -5,7 +5,7 @@ import cors from "cors";
 import pool from "./config/db.config.js";
 import chalk from "chalk";
 import { myLogger } from "./middlewares/log/isLogged.js";
-
+import { limiter } from "./middlewares/helper/rateLimiter.js";
 //Routes imports
 import AuthRoutes from "./routes/authRoutes.js";
 import UserRoutes from "./routes/userRoutes.js";
@@ -25,10 +25,17 @@ dotenv.config();
 //app initialization
 const app = express();
 
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 100,
+//   max: 20,
+//   message: "Too many requests from this Ip",
+// });
+
 //Middlewares
 app.use(express.json());
 app.use(cors());
 app.use(myLogger);
+app.use(limiter);
 
 //Routes usage
 app.use("/api/v1/auth", AuthRoutes);

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "dev:start": "nodemon src/server.js"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +25,7 @@
     "cron": "^4.4.0",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.5.1",
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.1",
     "multer": "^2.1.1",
